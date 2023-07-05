@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404,redirect
 from .forms import NewItemForm, EditItemForm
 
 from .models import Item
+from django.contrib.auth import get_user_model
 
 # Create your views here.
 def detail(request, pk):
@@ -13,6 +14,20 @@ def detail(request, pk):
     return render(request, 'details.html',{
         'item': item,
         'related_items': related_items
+    })
+
+def writer(request,pk):
+    User = get_user_model()
+    item = Item.objects.filter(pk=pk).values('created_by_id')
+    print("item",item)
+    instance = User.objects.values_list('id')
+    # instance = User.objects.get(id=item)
+    # instance = User.objects.filter(id=item)
+    print("Author ID",instance)
+    # author = User.objects.filter('id')
+    # print("Author",author)
+    return render(request, 'profile.html',{
+        'item': item
     })
 
 @login_required
